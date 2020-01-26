@@ -2,7 +2,7 @@
  *	airRohr firmware
  *	Copyright (C) 2016-2018  Code for Stuttgart a.o.
  *
- *  English translations
+ *  Hungarian translations
  *
  *	Texts should be as short as possible
  */
