@@ -35,7 +35,7 @@ const char INTL_DNMS_CORRECTION[] PROGMEM = "correction in dB(A)";
 const char INTL_TEMP_CORRECTION[] PROGMEM = "Correction in °C";
 const char INTL_NEO6M[] PROGMEM = "GPS (NEO 6M)";
 const char INTL_BASICAUTH[] PROGMEM = "Azonosítás";
-#define INTL_REPORT_ISSUE "Report an issue"
+#define INTL_REPORT_ISSUE "Jelentek egy hibát"
 
 const char INTL_FS_WIFI_DESCRIPTION[] PROGMEM = "WiFi Szenzor konfigurációs módban";
 const char INTL_FS_WIFI_NAME[] PROGMEM = "Hálózat neve";
