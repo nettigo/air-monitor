@@ -1,103 +1,5 @@
 #include <Arduino.h>
 
-/************************************************************************
- *                                                                      *
- *  This source code needs to be compiled for the board                 *
- *  NodeMCU 1.0 (ESP-12E Module)                                        *
- *                                                                      *
- ************************************************************************
- *                                                                      *
- *    airRohr firmware                                                  *
- *    Copyright (C) 2016-2018  Code for Stuttgart a.o.                  *
- *                                                                      *
- * This program is free software: you can redistribute it and/or modify *
- * it under the terms of the GNU General Public License as published by *
- * the Free Software Foundation, either version 3 of the License, or    *
- * (at your option) any later version.                                  *
- *                                                                      *
- * This program is distributed in the hope that it will be useful,      *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        *
- * GNU General Public License for more details.                         *
- *                                                                      *
- * You should have received a copy of the GNU General Public License    *
- * along with this program. If not, see <http://www.gnu.org/licenses/>. *
- *                                                                      *
- ************************************************************************
- * OK LAB Particulate Matter Sensor                                     *
- *      - nodemcu-LoLin board                                           *
- *      - Nova SDS0111                                                  *
- *  http://inovafitness.com/en/Laser-PM2-5-Sensor-SDS011-35.html        *
- *                                                                      *
- * Wiring Instruction:                                                  *
- *      - SDS011 Pin 1  (TX)   -> Pin D1 / GPIO5                        *
- *      - SDS011 Pin 2  (RX)   -> Pin D2 / GPIO4                        *
- *      - SDS011 Pin 3  (GND)  -> GND                                   *
- *      - SDS011 Pin 4  (2.5m) -> unused                                *
- *      - SDS011 Pin 5  (5V)   -> VU                                    *
- *      - SDS011 Pin 6  (1m)   -> unused                                *
- *                                                                      *
- ************************************************************************
- *                                                                      *
- * Alternative                                                          *
- *      - nodemcu-LoLin board                                           *
- *      - Shinyei PPD42NS                                               *
- *      http://www.sca-shinyei.com/pdf/PPD42NS.pdf                      *
- *                                                                      *
- * Wiring Instruction:                                                  *
- *      Pin 2 of dust sensor PM2.5 -> Digital 6 (PWM)                   *
- *      Pin 3 of dust sensor       -> +5V                               *
- *      Pin 4 of dust sensor PM1   -> Digital 3 (PMW)                   *
- *                                                                      *
- *      - PPD42NS Pin 1 (grey or green)  => GND                         *
- *      - PPD42NS Pin 2 (green or white)) => Pin D5 /GPIO14             *
- *        counts particles PM25                                         *
- *      - PPD42NS Pin 3 (black or yellow) => Vin                        *
- *      - PPD42NS Pin 4 (white or black) => Pin D6 / GPIO12             *
- *        counts particles PM10                                         *
- *      - PPD42NS Pin 5 (red)   => unused                               *
- *                                                                      *
- ************************************************************************
- * Extension: DHT22 (AM2303)                                            *
- *  http://www.aosong.com/en/products/details.asp?id=117                *
- *                                                                      *
- * DHT22 Wiring Instruction                                             *
- * (left to right, front is perforated side):                           *
- *      - DHT22 Pin 1 (VDD)     -> Pin 3V3 (3.3V)                       *
- *      - DHT22 Pin 2 (DATA)    -> Pin D7 (GPIO13)                      *
- *      - DHT22 Pin 3 (NULL)    -> unused                               *
- *      - DHT22 Pin 4 (GND)     -> Pin GND                              *
- *                                                                      *
- ************************************************************************
- * Extensions connected via I2C:                                        *
- * HTU21D (https://www.sparkfun.com/products/13763),                    *
- * BMP180, BMP280, BME280, OLED Display with SSD1306 (128x64 px)        *
- *                                                                      *
- * Wiring Instruction                                                   *
- * (see labels on display or sensor board)                              *
- *      VCC       ->     Pin 3V3                                        *
- *      GND       ->     Pin GND                                        *
- *      SCL       ->     Pin D4 (GPIO2)                                 *
- *      SDA       ->     Pin D3 (GPIO0)                                 *
- *                                                                      *
- ************************************************************************
- *                                                                      *
- * Please check Readme.md for other sensors and hardware                *
- *                                                                      *
- ************************************************************************
- *
- * 06.07.2018
- * Der Sketch verwendet 459607 Bytes (44%) des Programmspeicherplatzes. Das Maximum sind 1044464 Bytes.
- * Globale Variablen verwenden 48736 Bytes (59%) des dynamischen Speichers, 33184 Bytes für lokale Variablen verbleiben. Das Maximum sind 81920 Bytes.
- *
- * first version with esp8266 lib 2.4.2
- * Der Sketch verwendet 491364 Bytes (47%) des Programmspeicherplatzes. Das Maximum sind 1044464 Bytes.
- * Globale Variablen verwenden 37172 Bytes (45%) des dynamischen Speichers, 44748 Bytes für lokale Variablen verbleiben. Das Maximum sind 81920 Bytes.
- *
- * Der Sketch verwendet 489152 Bytes (46%) des Programmspeicherplatzes. Das Maximum sind 1044464 Bytes.
- * Globale Variablen verwenden 37160 Bytes (45%) des dynamischen Speichers, 44760 Bytes für lokale Variablen verbleiben. Das Maximum sind 81920 Bytes.
- *
- ************************************************************************/
 // increment on change
 #define SOFTWARE_VERSION "NAMF-2019-020"
 #define SPOOF_SOFTWARE_VERSION "NRZ-2018-123B"
@@ -131,6 +33,11 @@
 #include <coredecls.h>
 #include <assert.h>
 
+void writeConfig();
+void writeConfigRaw(String json_string);
+String Float2String(const double value, uint8_t digits);
+static void autoUpdate(const String host, const String port, const String url);
+String add_sensor_type(const String& sensor_text) ;
 #if defined(INTL_BG)
 #include "intl_bg.h"
 #elif defined(INTL_CZ)
@@ -2070,6 +1977,7 @@ void webserver_prometheus_endpoint() {
 	server.send(200, FPSTR(TXT_CONTENT_TYPE_TEXT_PLAIN), data_4_prometheus);
 }
 
+void webserver_not_found();
 /*****************************************************************
  * Webserver Images                                              *
  *****************************************************************/
