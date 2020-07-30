@@ -107,6 +107,8 @@
  * Includes                                                      *
  *****************************************************************/
 #include <FS.h>                     // must be first
+#include <EEPROM.h>
+#include <string.h>
 #include <ESP8266WiFi.h>
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
@@ -255,6 +257,15 @@ namespace cfg {
 		}
 	}
 }
+
+typedef struct {
+    char init[5];
+    char data[3500];
+} eepromSave;
+bool EEPROM_OK = false;
+eepromSave configData;
+const char initString[] PROGMEM = "NAMF";
+
 
 #define HOST_MADAVI "api-rrd.madavi.de"
 #define URL_MADAVI "/data.php"
@@ -485,6 +496,35 @@ template<typename T, std::size_t N> constexpr std::size_t capacity_null_terminat
 #define msSince(timestamp_before) (act_milli - (timestamp_before))
 
 const char data_first_part[] PROGMEM = "{\"software_version\": \"{v}\", \"sensordatavalues\":[";
+
+void readEEPROM(void) {
+	EEPROM.get(0, configData);
+	configData.init[4] = 0;
+	Serial.println("Trying EEPROM");
+    if (!strcmp_P(configData.init, initString)) {
+        Serial.println("EEPROM initialized and saved before.\nSaved data:");
+        Serial.println(configData.data);
+		EEPROM_OK = true; 
+    } else {
+		Serial.println("Failed EEPROM");
+		Serial.println(configData.init);
+	}
+
+};
+
+void saveEEPROM(String &config){
+	if (config.length() < 3500) {
+		strncpy_P(configData.init, initString, 5);
+		config.toCharArray(configData.data, 3499);
+		Serial.print(F("Written EEPROM. "));
+		Serial.print(config.length());
+		Serial.println(F(" bytes"));
+		EEPROM.put(0,configData);
+		EEPROM.commit();
+	}
+	
+}
+
 
 /*****************************************************************
  * Debug output                                                  *
@@ -857,6 +897,7 @@ void readConfig() {
 
 	if (SPIFFS.begin()) {
 		debug_out(F("mounted file system..."), DEBUG_MIN_INFO, 1);
+		readEEPROM();
 		if (SPIFFS.exists("/config.json")) {
 			//file exists, reading and loading
 			debug_out(F("reading config file..."), DEBUG_MIN_INFO, 1);
@@ -1056,6 +1097,7 @@ String getMaskedConfigString() {
 void writeConfig(){
 	String json_string  = getConfigString();
 	writeConfigRaw(json_string);
+	saveEEPROM(json_string);
 }
 void writeConfigRaw(String json_string) {
 	debug_out(json_string, DEBUG_MIN_INFO, 1);
@@ -3946,6 +3988,8 @@ static bool acquireNetworkTime() {
  *****************************************************************/
 void setup() {
 	Serial.begin(115200);					// Output to Serial at 9600 baud
+	EEPROM.begin(4096);
+
 	Wire.begin(I2C_PIN_SDA, I2C_PIN_SCL);
 
 	esp_chipid = String(ESP.getChipId());
