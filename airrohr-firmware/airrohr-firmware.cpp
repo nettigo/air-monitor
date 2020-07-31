@@ -1390,7 +1390,7 @@ void webserver_config_force_update() {
         page_content += form_submit(FPSTR(INTL_SAVE_AND_RESTART));
         page_content += F("</form>");
 
-        page_content += F("<h2>Force update</h2>");
+        page_content += F("<h2>Custom update</h2>");
         page_content += F("<form method='POST' action='/forceUpdate' style='width:100%;'>");
         page_content += F("HOST:<input name=\"host\" value='");
         page_content += UPDATE_HOST;
