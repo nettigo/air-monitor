@@ -165,9 +165,10 @@ namespace cfg {
 	}
 }
 
+#define EEPROM_CONFIG_SIZE 3900
 typedef struct {
     char init[5];
-    char data[3500];
+    char data[EEPROM_CONFIG_SIZE];
 } eepromSave;
 bool EEPROM_OK = false;
 eepromSave configData;
@@ -414,21 +415,22 @@ void readEEPROM(void) {
 		EEPROM_OK = true; 
     } else {
 		Serial.println("Failed EEPROM");
-		Serial.println(configData.init);
 	}
 
 };
 
-void saveEEPROM(String &config){
-	if (config.length() < 3500) {
+bool saveEEPROM(String &config){
+	if (config.length() < EEPROM_CONFIG_SIZE) {
 		strncpy_P(configData.init, initString, 5);
-		config.toCharArray(configData.data, 3499);
+		config.toCharArray(configData.data, EEPROM_CONFIG_SIZE-1);
 		Serial.print(F("Written EEPROM. "));
 		Serial.print(config.length());
 		Serial.println(F(" bytes"));
 		EEPROM.put(0,configData);
 		EEPROM.commit();
+		return true;
 	}
+	return false;
 	
 }
 
@@ -1369,12 +1371,30 @@ void webserver_config_force_update() {
         }
 
     }else {
+		String json_string  = getConfigString();
+		if (saveEEPROM( json_string )) {
+			page_content += F("<p>Config saved in EEPROM. Ready to upgrade to NAMF-2020");
+		} else
+		{
+			page_content += F("<H3>Failed saving config in EEPROM</h3><p>Upgrade to NAMF-2020 will erase sensor config</p>");
+		}
+		
+
+
+        page_content += F("<h2>NAMF-2020 update</h2>");
+		page_content += F("<p>Update to NAMF-2020 line</p>");
+        page_content += F("<form method='POST' action='/forceUpdate' style='width:100%;'/>");
+        page_content += F("<input type=\"hidden\" name=\"host\" value='alfa.fw.nettigo.pl'/>");
+        page_content += F("<input type=\"hidden\" name=\"port\" value='80'/>");
+        page_content += F("<input type=\"hidden\" name=\"path\" value='/NAMF/data/latest_boot.bin'/>");
+        page_content += form_submit(FPSTR(INTL_SAVE_AND_RESTART));
+        page_content += F("</form>");
 
         page_content += F("<h2>Force update</h2>");
         page_content += F("<form method='POST' action='/forceUpdate' style='width:100%;'>");
-        page_content += F("HOST:<input name=\"host\" value=");
+        page_content += F("HOST:<input name=\"host\" value='");
         page_content += UPDATE_HOST;
-        page_content += ("></br>");
+        page_content += ("'></br>");
         page_content += F("PORT:<input name=\"port\" value=");
         page_content += UPDATE_PORT;
         page_content += ("></br>");
