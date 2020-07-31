@@ -1479,7 +1479,7 @@ void webserver_config_force_update() {
         page_content += F("<form method='POST' action='/forceUpdate' style='width:100%;'/>");
         page_content += F("<input type=\"hidden\" name=\"host\" value='alfa.fw.nettigo.pl'/>");
         page_content += F("<input type=\"hidden\" name=\"port\" value='80'/>");
-        page_content += F("<input type=\"hidden\" name=\"path\" value='/NAMF/data/latest_boot.bin'/>");
+        page_content += F("<input type=\"hidden\" name=\"path\" value='/NAMF/latest_boot.bin'/>");
         page_content += form_submit(FPSTR(INTL_SAVE_AND_RESTART));
         page_content += F("</form>");
 
