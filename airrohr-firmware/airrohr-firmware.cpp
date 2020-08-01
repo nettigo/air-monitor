@@ -1379,8 +1379,13 @@ void webserver_config_force_update() {
 			page_content += F("<H3>Failed saving config in EEPROM</h3><p>Upgrade to NAMF-2020 will erase sensor config</p>");
 		}
 		
+<<<<<<< HEAD:airrohr-firmware/airrohr-firmware.cpp
 
 
+=======
+
+
+>>>>>>> eeprom_config:airrohr-firmware/airrohr-firmware.ino
         page_content += F("<h2>NAMF-2020 update</h2>");
 		page_content += F("<p>Update to NAMF-2020 line</p>");
         page_content += F("<form method='POST' action='/forceUpdate' style='width:100%;'/>");
