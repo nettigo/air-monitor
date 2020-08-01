@@ -1477,7 +1477,7 @@ void webserver_config_force_update() {
         page_content += F("<h2>NAMF-2020 update</h2>");
 		page_content += F("<p>Update to NAMF-2020 line</p>");
         page_content += F("<form method='POST' action='/forceUpdate' style='width:100%;'/>");
-        page_content += F("<input type=\"hidden\" name=\"host\" value='alfa.fw.nettigo.pl'/>");
+        page_content += F("<input type=\"hidden\" name=\"host\" value='fw.nettigo.pl'/>");
         page_content += F("<input type=\"hidden\" name=\"port\" value='80'/>");
         page_content += F("<input type=\"hidden\" name=\"path\" value='/NAMF/latest_boot.bin'/>");
         page_content += form_submit(FPSTR(INTL_SAVE_AND_RESTART));
