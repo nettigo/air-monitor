@@ -1524,7 +1524,7 @@ void webserver_config() {
 			page_content += form_input("host_custom", FPSTR(INTL_SERVER), host_custom, capacity_null_terminated_char_array(host_custom));
 			page_content += form_input("url_custom", FPSTR(INTL_PATH), url_custom, capacity_null_terminated_char_array(url_custom));
 			constexpr int max_port_digits = constexprstrlen("65535");
-			page_content += form_input("port_custom", FPSTR(INTL_PORT), String(port_custom), max_port_digits);
+			//page_content += form_input("port_custom", FPSTR(INTL_PORT), String(port_custom), max_port_digits);
 			page_content += form_input("user_custom", FPSTR(INTL_USER), user_custom, capacity_null_terminated_char_array(user_custom));
 			page_content += form_password("pwd_custom", FPSTR(INTL_PASSWORD), pwd_custom, capacity_null_terminated_char_array(pwd_custom));
 			page_content += FPSTR(TABLE_TAG_CLOSE_BR);
