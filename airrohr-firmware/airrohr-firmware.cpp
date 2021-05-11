@@ -2377,8 +2377,8 @@ void sendData(const String& data, const int pin, const char* host, const int htt
  *****************************************************************/
 void sendLuftdaten(const String& data, const int pin, const char* host, const int httpPort, const char* url, const bool verify, const char* replace_str) {
 	String data_4_dusti = FPSTR(data_first_part);
-  //data_4_dusti.replace("{v}", SOFTWARE_VERSION);
-	data_4_dusti.replace("{v}", SPOOF_SOFTWARE_VERSION); // sorry for that!
+    data_4_dusti.replace("{v}", SOFTWARE_VERSION);
+	// data_4_dusti.replace("{v}", SPOOF_SOFTWARE_VERSION); // sorry for that!
 	data_4_dusti += data;
 	data_4_dusti.remove(data_4_dusti.length() - 1);
 	data_4_dusti.replace(replace_str, "");
