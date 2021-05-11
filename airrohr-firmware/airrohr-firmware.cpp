@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 // increment on change
-#define SOFTWARE_VERSION "NAMF-2019-022"
+#define SOFTWARE_VERSION "NAMF-2019-023"
 
 
 /*****************************************************************
@@ -1681,7 +1681,7 @@ void webserver_config() {
 		page_content += line_from_value(FPSTR(INTL_MEASUREMENT_INTERVAL), String(sending_intervall_ms));
 		page_content += line_from_value(tmpl(FPSTR(INTL_SEND_TO), F("CSV")), String(send2csv));
 		page_content += line_from_value(tmpl(FPSTR(INTL_SEND_TO), F("Feinstaub-App")), String(send2fsapp));
-		page_content += line_from_value(tmpl(FPSTR(INTL_SEND_TO), F("opensensemap")), String(send2sensemap));
+		page_content += line_from_value(tmpl(FPSTR(INTL_SEND_TO), F("opensensemap (DISABLED)")), String(send2sensemap));
 		page_content += F("<br/>senseBox-ID ");
 		page_content += senseboxid;
 		page_content += F("<br/><br/>");
