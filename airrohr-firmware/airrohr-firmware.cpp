@@ -1515,7 +1515,7 @@ void webserver_config() {
 			page_content += FPSTR(BR_TAG);
 			page_content += form_checkbox("send2fsapp", tmpl(FPSTR(INTL_SEND_TO), F("Feinstaub-App")), send2fsapp);
 			page_content += FPSTR(BR_TAG);
-			page_content += form_checkbox("send2sensemap", tmpl(FPSTR(INTL_SEND_TO), F("OpenSenseMap")), send2sensemap);
+			page_content += form_checkbox("send2sensemap", tmpl(FPSTR(INTL_SEND_TO), F("OpenSenseMap (DISABLED)")), send2sensemap);
 			page_content += FPSTR(TABLE_TAG_OPEN);
 			page_content += form_input("senseboxid", "senseBox-ID: ", senseboxid, capacity_null_terminated_char_array(senseboxid));
 			page_content += FPSTR(TABLE_TAG_CLOSE_BR);
@@ -1681,7 +1681,7 @@ void webserver_config() {
 		page_content += line_from_value(FPSTR(INTL_MEASUREMENT_INTERVAL), String(sending_intervall_ms));
 		page_content += line_from_value(tmpl(FPSTR(INTL_SEND_TO), F("CSV")), String(send2csv));
 		page_content += line_from_value(tmpl(FPSTR(INTL_SEND_TO), F("Feinstaub-App")), String(send2fsapp));
-		page_content += line_from_value(tmpl(FPSTR(INTL_SEND_TO), F("opensensemap (DISABLED)")), String(send2sensemap));
+		page_content += line_from_value(tmpl(FPSTR(INTL_SEND_TO), F("opensensemap")), String(send2sensemap));
 		page_content += F("<br/>senseBox-ID ");
 		page_content += senseboxid;
 		page_content += F("<br/><br/>");
