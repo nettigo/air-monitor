@@ -2,7 +2,6 @@
 
 // increment on change
 #define SOFTWARE_VERSION "NAMF-2019-021"
-#define SPOOF_SOFTWARE_VERSION "NRZ-2018-123B"
 
 
 /*****************************************************************
@@ -1525,7 +1524,7 @@ void webserver_config() {
 			page_content += form_input("host_custom", FPSTR(INTL_SERVER), host_custom, capacity_null_terminated_char_array(host_custom));
 			page_content += form_input("url_custom", FPSTR(INTL_PATH), url_custom, capacity_null_terminated_char_array(url_custom));
 			constexpr int max_port_digits = constexprstrlen("65535");
-			page_content += form_input("port_custom", FPSTR(INTL_PORT), String(port_custom), max_port_digits);
+			//page_content += form_input("port_custom", FPSTR(INTL_PORT), String(port_custom), max_port_digits);
 			page_content += form_input("user_custom", FPSTR(INTL_USER), user_custom, capacity_null_terminated_char_array(user_custom));
 			page_content += form_password("pwd_custom", FPSTR(INTL_PASSWORD), pwd_custom, capacity_null_terminated_char_array(pwd_custom));
 			page_content += FPSTR(TABLE_TAG_CLOSE_BR);
@@ -2377,8 +2376,7 @@ void sendData(const String& data, const int pin, const char* host, const int htt
  *****************************************************************/
 void sendLuftdaten(const String& data, const int pin, const char* host, const int httpPort, const char* url, const bool verify, const char* replace_str) {
 	String data_4_dusti = FPSTR(data_first_part);
-  //data_4_dusti.replace("{v}", SOFTWARE_VERSION);
-	data_4_dusti.replace("{v}", SPOOF_SOFTWARE_VERSION); // sorry for that!
+    data_4_dusti.replace("{v}", SOFTWARE_VERSION);
 	data_4_dusti += data;
 	data_4_dusti.remove(data_4_dusti.length() - 1);
 	data_4_dusti.replace(replace_str, "");
@@ -4025,7 +4023,7 @@ static unsigned long sendDataToOptionalApis(const String &data) {
 		data_4_custom = "{\"esp8266id\": \"" + String(esp_chipid) + "\", " + data_4_custom;
 		debug_out(String(FPSTR(DBG_TXT_SENDING_TO)) + F("custom api: "), DEBUG_MIN_INFO, 1);
 		start_send = millis();
-		sendData(data_4_custom, 0, cfg::host_custom, cfg::port_custom, cfg::url_custom, false, basic_auth_custom.c_str(), FPSTR(TXT_CONTENT_TYPE_JSON));
+		sendData(data_4_custom, 0, cfg::host_custom, 80, cfg::url_custom, false, basic_auth_custom.c_str(), FPSTR(TXT_CONTENT_TYPE_JSON));
 		sum_send_time += millis() - start_send;
 	}
 	return sum_send_time;
@@ -4148,8 +4146,7 @@ void loop() {
 	if (send_now) {
 		debug_out(F("Creating data string:"), DEBUG_MIN_INFO, 1);
 		String data = FPSTR(data_first_part);
-		//data.replace("{v}", SOFTWARE_VERSION);
-		data.replace("{v}", SPOOF_SOFTWARE_VERSION); // sorry for that!
+		data.replace("{v}", SOFTWARE_VERSION);
 		String data_sample_times  = Value2Json(F("samples"), String(sample_count));
 		data_sample_times += Value2Json(F("min_micro"), String(min_micro));
 		data_sample_times += Value2Json(F("max_micro"), String(max_micro));
