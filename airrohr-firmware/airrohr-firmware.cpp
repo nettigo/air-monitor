@@ -2382,7 +2382,7 @@ void sendLuftdaten(const String& data, const int pin, const char* host, const in
 	data_4_dusti.replace(replace_str, "");
 	data_4_dusti += "]}";
 	if (data != "") {
-		sendData(data_4_dusti, pin, host, httpPort, url, verify, "", FPSTR(TXT_CONTENT_TYPE_JSON));
+		sendData(data_4_dusti, pin, host, 80, url, verify, "", FPSTR(TXT_CONTENT_TYPE_JSON));
 	} else {
 		debug_out(F("No data sent..."), DEBUG_MIN_INFO, 1);
 	}
@@ -3979,11 +3979,11 @@ static unsigned long sendDataToOptionalApis(const String &data) {
 	if (cfg::send2madavi) {
 		debug_out(String(FPSTR(DBG_TXT_SENDING_TO)) + F("madavi.de: "), DEBUG_MIN_INFO, 1);
 		start_send = millis();
-		sendData(data, 0, HOST_MADAVI, (cfg::ssl_madavi ? 443 : 80), URL_MADAVI, true, "", FPSTR(TXT_CONTENT_TYPE_JSON));
+		sendData(data, 0, HOST_MADAVI, (80), URL_MADAVI, true, "", FPSTR(TXT_CONTENT_TYPE_JSON));
 		sum_send_time += millis() - start_send;
 	}
 
-	if (cfg::send2sensemap && (cfg::senseboxid[0] != '\0')) {
+	if (0 && cfg::send2sensemap && (cfg::senseboxid[0] != '\0')) {
 		debug_out(String(FPSTR(DBG_TXT_SENDING_TO)) + F("opensensemap: "), DEBUG_MIN_INFO, 1);
 		start_send = millis();
 		String sensemap_path = URL_SENSEMAP;
