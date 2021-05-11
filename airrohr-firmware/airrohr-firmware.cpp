@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 // increment on change
-#define SOFTWARE_VERSION "NAMF-2019-021"
+#define SOFTWARE_VERSION "NAMF-2019-022"
 
 
 /*****************************************************************
