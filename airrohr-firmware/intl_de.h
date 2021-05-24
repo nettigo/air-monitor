@@ -64,6 +64,7 @@ const char INTL_HOME[] PROGMEM = "Übersicht";
 const char INTL_BACK_TO_HOME[] PROGMEM = "Zurück zur Startseite";
 const char INTL_CURRENT_DATA[] PROGMEM = "Aktuelle Werte";
 const char INTL_ACTIVE_SENSORS_MAP[] PROGMEM = "Karte der aktiven Sensoren (externer Link)";
+const char INTL_MIGRATE[] PROGMEM = "Migrate to NAMF-2020";
 const char INTL_CONFIGURATION_DELETE[] PROGMEM = "Konfiguration löschen";
 const char INTL_CONFIGURATION_REALLY_DELETE[] PROGMEM = "Konfiguration wirklich löschen?";
 const char INTL_DELETE[] PROGMEM = "Löschen";

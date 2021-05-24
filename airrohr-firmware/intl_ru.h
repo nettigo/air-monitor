@@ -7,6 +7,7 @@
  *	Texts should be as short as possible
  *	We only have 512 kB for the entire firmware
  */
+const char INTL_MIGRATE[] PROGMEM = "Migrate to NAMF-2020";
 
 const char INTL_LANG[] = "RU";
 const char INTL_PM_SENSOR[] PROGMEM = "Датчик пыли";

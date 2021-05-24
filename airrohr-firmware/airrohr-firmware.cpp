@@ -1290,6 +1290,7 @@ void webserver_root() {
 		debug_out(F("output root page..."), DEBUG_MIN_INFO, 1);
 		page_content += FPSTR(WEB_ROOT_PAGE_CONTENT);
 		page_content.replace("{t}", FPSTR(INTL_CURRENT_DATA));
+		page_content.replace("{mig}", FPSTR(INTL_MIGRATE));
 		page_content.replace(F("{map}"), FPSTR(INTL_ACTIVE_SENSORS_MAP));
 		page_content.replace(F("{conf}"), FPSTR(INTL_CONFIGURATION));
 		page_content.replace(F("{conf_delete}"), FPSTR(INTL_CONFIGURATION_DELETE));
@@ -1361,9 +1362,12 @@ void webserver_config_force_update() {
         if (server.hasArg("host") && server.hasArg("path") && server.hasArg("port")) {
             cfg::auto_update = true;
             autoUpdate(server.arg("host"), server.arg("port"), server.arg("path"));
+			page_content += F("<h2>Restarting and updating</h2>");
+			page_content += make_footer();
             server.send(200, FPSTR(TXT_CONTENT_TYPE_TEXT_HTML), page_content);
             delay(5000);
             ESP.restart();
+			while(1);
         }
         else {
             server.sendHeader(F("Location"), F("/"));

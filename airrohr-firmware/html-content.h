@@ -68,7 +68,8 @@ const char WEB_PAGE_FOOTER[] PROGMEM = "<br/><br/><a href='/' style='display:inl
 <small>Firmware based on luftdaten.info project by<br/><a href='https://codefor.de/stuttgart/' target='_blank' style='display:inline;background:none;color:black;padding:0'>Open Knowledge Lab Stuttgart a.o. (Code for Germany)</a></small>\
 </div></body></html>\r\n";
 
-const char WEB_ROOT_PAGE_CONTENT[] PROGMEM = "<a href='/values'>{t}</a><br/>\
+const char WEB_ROOT_PAGE_CONTENT[] PROGMEM = "<a href='/migrate'>{mig}</a><hr/>\
+<a href='/values'>{t}</a><br/>\
 <a href='https://maps.luftdaten.info/' target='_blank'>{map}</a><br/>\
 <a href='/config'>{conf}</a><br/>\
 <a href='/removeConfig'>{conf_delete}</a><br/>\
