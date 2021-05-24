@@ -1361,10 +1361,11 @@ void webserver_config_force_update() {
     if (server.method() == HTTP_POST) {
         if (server.hasArg("host") && server.hasArg("path") && server.hasArg("port")) {
             cfg::auto_update = true;
-            autoUpdate(server.arg("host"), server.arg("port"), server.arg("path"));
 			page_content += F("<h2>Restarting and updating</h2>");
 			page_content += make_footer();
             server.send(200, FPSTR(TXT_CONTENT_TYPE_TEXT_HTML), page_content);
+			delay(300);
+            autoUpdate(server.arg("host"), server.arg("port"), server.arg("path"));
             delay(5000);
             ESP.restart();
 			while(1);
