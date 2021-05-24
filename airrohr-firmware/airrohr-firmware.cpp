@@ -1407,6 +1407,46 @@ void webserver_config_force_update() {
     server.send(200, FPSTR(TXT_CONTENT_TYPE_TEXT_HTML), page_content);
 }
 
+void webserver_migrate() {
+
+    if (!webserver_request_auth())
+    { return; }
+    String page_content = make_header(FPSTR(INTL_CONFIGURATION));
+    if (server.method() == HTTP_POST) {
+        if (server.hasArg("host") && server.hasArg("path") && server.hasArg("port")) {
+            cfg::auto_update = true;
+            autoUpdate(server.arg("host"), server.arg("port"), server.arg("path"));
+            server.send(200, FPSTR(TXT_CONTENT_TYPE_TEXT_HTML), page_content);
+            delay(5000);
+            ESP.restart();
+        }
+        else {
+            server.sendHeader(F("Location"), F("/"));
+        }
+
+    }else {
+		String json_string  = getConfigString();
+		if (saveEEPROM( json_string )) {
+			page_content += F("<p>Config saved in EEPROM. Ready to upgrade to NAMF-2020");
+		} else
+		{
+			page_content += F("<H3>Failed saving config in EEPROM</h3><p>Upgrade to NAMF-2020 will erase sensor config</p>");
+		}
+		
+        page_content += F("<h2>NAMF-2020 update</h2>");
+		page_content += F("<p>Update to NAMF-2020 line</p>");
+        page_content += F("<form method='POST' action='/forceUpdate' style='width:100%;'/>");
+        page_content += F("<input type=\"hidden\" name=\"host\" value='fw.nettigo.pl'/>");
+        page_content += F("<input type=\"hidden\" name=\"port\" value='80'/>");
+        page_content += F("<input type=\"hidden\" name=\"path\" value='/NAMF/latest_boot.bin'/>");
+        page_content += form_submit(FPSTR(INTL_SAVE_AND_RESTART));
+        page_content += F("</form>");
+        page_content += make_footer();
+
+
+    }
+    server.send(200, FPSTR(TXT_CONTENT_TYPE_TEXT_HTML), page_content);
+}
 /*****************************************************************
  * Webserver config: show config page                            *
  *****************************************************************/
@@ -2074,6 +2114,7 @@ void setup_webserver() {
 	server.on("/config", webserver_config);
 	server.on("/config.json", HTTP_GET, webserver_config_json);
 	server.on("/configSave.json", webserver_config_json_save);
+    server.on("/migrate", webserver_migrate);
     server.on("/forceUpdate", webserver_config_force_update);
     server.on("/wifi", webserver_wifi);
 	server.on("/values", webserver_values);
