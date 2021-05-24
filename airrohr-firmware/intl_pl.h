@@ -8,8 +8,8 @@
  *	We only have 512 kB for the entire firmware
  */
 
-cconst char INTL_MIGRATE[] PROGMEM = "Migrate to NAMF-2020";
-onst char INTL_LANG[] = "PL";
+const char INTL_MIGRATE[] PROGMEM = "Migrate to NAMF-2020";
+const char INTL_LANG[] = "PL";
 const char INTL_PM_SENSOR[] PROGMEM = "Czujnik pyłu zawieszonego";
 const char INTL_CONFIGURATION[] PROGMEM = "Konfiguracja";
 const char INTL_WIFI_SETTINGS[] PROGMEM = "Ustawienia WiFi";
