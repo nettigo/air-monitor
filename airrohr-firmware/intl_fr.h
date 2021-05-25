@@ -8,6 +8,7 @@
  *	We only have 512 kB for the entire firmware
  */
 const char INTL_MIGRATE[] PROGMEM = "Migrate to NAMF-2020";
+const char INTL_MIGRATE_DESC[] PROGMEM = "<h2>New firmware - NAMF-2020</h2><p>Update to NAMF-2020 line, Your current firmware is not being supported anymore</p>";
 
 const char INTL_LANG[] = "FR";
 const char INTL_PM_SENSOR[] PROGMEM = "Détecteur de particules fines";

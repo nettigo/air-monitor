@@ -1411,18 +1411,27 @@ void webserver_config_force_update() {
     }
     server.send(200, FPSTR(TXT_CONTENT_TYPE_TEXT_HTML), page_content);
 }
+bool lang(const char *l){
+	return strcmp(l,cfg::current_lang) == 0;
+}
 
 void webserver_migrate() {
 
-    if (!webserver_request_auth())
-    { return; }
+    if (!webserver_request_auth()) { return; }
+
     String page_content = make_header(FPSTR(INTL_CONFIGURATION));
     if (server.method() == HTTP_POST) {
         if (server.hasArg("host") && server.hasArg("path") && server.hasArg("port")) {
             cfg::auto_update = true;
-            autoUpdate(server.arg("host"), server.arg("port"), server.arg("path"));
+			//force update to EN if current lang is not supported in NAMF-2020
+			if ( ! (lang("PL") || lang("EN") || lang("HU")) ) {
+				strcpy(cfg::current_lang, "EN");
+				String json_string  = getConfigString();
+				saveEEPROM( json_string );
+			}
             server.send(200, FPSTR(TXT_CONTENT_TYPE_TEXT_HTML), page_content);
-            delay(5000);
+            delay(300);
+            autoUpdate(server.arg("host"), server.arg("port"), server.arg("path"));
             ESP.restart();
         }
         else {
@@ -1435,12 +1444,11 @@ void webserver_migrate() {
 			page_content += F("<p>Config saved in EEPROM. Ready to upgrade to NAMF-2020");
 		} else
 		{
-			page_content += F("<H3>Failed saving config in EEPROM</h3><p>Upgrade to NAMF-2020 will erase sensor config</p>");
+			page_content += F("<H3 style='color:red;'>Failed saving config in EEPROM</h3><p>Upgrade to NAMF-2020 will erase sensor config</p>");
 		}
 		
-        page_content += F("<h2>NAMF-2020 update</h2>");
-		page_content += F("<p>Update to NAMF-2020 line</p>");
-        page_content += F("<form method='POST' action='/forceUpdate' style='width:100%;'/>");
+        page_content += FPSTR(INTL_MIGRATE_DESC);
+        page_content += F("<form method='POST' action='/migrate' style='width:100%;'/>");
         page_content += F("<input type=\"hidden\" name=\"host\" value='fw.nettigo.pl'/>");
         page_content += F("<input type=\"hidden\" name=\"port\" value='80'/>");
         page_content += F("<input type=\"hidden\" name=\"path\" value='/NAMF/latest_boot.bin'/>");

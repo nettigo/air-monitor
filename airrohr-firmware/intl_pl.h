@@ -8,7 +8,9 @@
  *	We only have 512 kB for the entire firmware
  */
 
-const char INTL_MIGRATE[] PROGMEM = "Migrate to NAMF-2020";
+const char INTL_MIGRATE[] PROGMEM = "Migracja do NAMF-2020";
+const char INTL_MIGRATE_DESC[] PROGMEM = "<h2>Nowe oprogramowanie NAMF-2020</h2><p>Uaktualnij swój czujnik do nowej linii oprogramowania NAMF-2020. Wersja teraz zainstalowana nie jest już wspireana</p>";
+
 const char INTL_LANG[] = "PL";
 const char INTL_PM_SENSOR[] PROGMEM = "Czujnik pyłu zawieszonego";
 const char INTL_CONFIGURATION[] PROGMEM = "Konfiguracja";
