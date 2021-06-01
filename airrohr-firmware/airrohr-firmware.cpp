@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 // increment on change
-#define SOFTWARE_VERSION "NAMF-2019-023"
+#define SOFTWARE_VERSION "NAMF-2019-024"
 
 
 /*****************************************************************
@@ -91,6 +91,9 @@ const unsigned long DURATION_BEFORE_FORCED_RESTART_MS = ONE_DAY_IN_MS * 28;  // 
  * Note that the names of these variables can't be easily changed *
  * as they are part of the json format used to persist the data.  *
  ******************************************************************/
+unsigned failedSDSCnt = 0;
+unsigned totalSDSCnt = 0;
+
 namespace cfg {
 	char wlanssid[35] = WLANSSID;
 	char wlanpwd[65] = WLANPWD;
@@ -2758,7 +2761,6 @@ String sensorSDS() {
 	int pm25_serial = 0;
 	int checksum_is = 0;
 	int checksum_ok = 0;
-
 	debug_out(String(FPSTR(DBG_TXT_START_READING)) + FPSTR(SENSORS_SDS011), DEBUG_MED_INFO, 1);
 	if (msSince(starttime) < (cfg::sending_intervall_ms - (WARMUPTIME_SDS_MS + READINGTIME_SDS_MS))) {
 		if (is_SDS_running) {
@@ -2818,7 +2820,7 @@ String sensorSDS() {
 			if (len > 2) { checksum_is += value; }
 			len++;
 			if (len == 10 && checksum_ok == 1 && (msSince(starttime) > (cfg::sending_intervall_ms - READINGTIME_SDS_MS))) {
-				if ((! isnan(pm10_serial)) && (! isnan(pm25_serial))) {
+				if ((! isnan(pm10_serial)) && (! isnan(pm25_serial))) {	//success!
 					sds_pm10_sum += pm10_serial;
 					sds_pm25_sum += pm25_serial;
 					if (sds_pm10_min > pm10_serial) {
@@ -2850,6 +2852,7 @@ String sensorSDS() {
 
 	}
 	if (send_now) {
+		totalSDSCnt ++;
 		last_value_SDS_P1 = -1;
 		last_value_SDS_P2 = -1;
 		if (sds_val_count > 2) {
@@ -2865,6 +2868,8 @@ String sensorSDS() {
 			debug_out("----", DEBUG_MIN_INFO, 1);
 			s += Value2Json("SDS_P1", Float2String(last_value_SDS_P1));
 			s += Value2Json("SDS_P2", Float2String(last_value_SDS_P2));
+		} else {
+			failedSDSCnt++;
 		}
 		sds_pm10_sum = 0;
 		sds_pm25_sum = 0;
@@ -3403,8 +3408,12 @@ static void autoUpdate(const String host, const String port, const String url) {
 		last_update_attempt = millis();
 		const HTTPUpdateResult ret = ESPhttpUpdate.update(host, (unsigned int)port.toInt(), url,
 									 SOFTWARE_VERSION + String(" ") + esp_chipid + String(" ") + SDS_version + String(" ") +
-									 String(cfg::current_lang) + String(" ") + String(INTL_LANG) + String(" ") +
+									 String(cfg::current_lang) + String(" ") + String(INTL_LANG) + String(" ") + String(failedSDSCnt) + String(F("-")) +
+									 String(totalSDSCnt) + String(" ") +
 									 String(cfg::use_beta ? "BETA" : ""));
+		//reset SDS stats
+		totalSDSCnt = 0;
+		failedSDSCnt = 0;
 		switch(ret) {
 		case HTTP_UPDATE_FAILED:
 			debug_out(String(FPSTR(DBG_TXT_UPDATE)) + FPSTR(DBG_TXT_UPDATE_FAILED), DEBUG_ERROR, 0);

@@ -1,3 +1,8 @@
+NAMF-2019-24 (2021-06-01)
+
+* preparation to migrate to NAMF-2020
+* collect SDS reading stats when checking for autoupdate
+
 NAMF-2019-023 (2021-05-11)
 
 * disabled all SSL sending data
